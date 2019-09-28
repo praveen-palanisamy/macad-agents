@@ -16,11 +16,11 @@ from torch.autograd import Variable
 import torch.multiprocessing as mp
 from tensorboardX import SummaryWriter
 
-from .utils import normalized_columns_initializer, set_init, push_and_pull, \
+from macad_agents.a3c.utils import normalized_columns_initializer, set_init_w, push_and_pull, \
     record
-from .shared_adam import SharedAdam
-from env.carla.multi_env import MultiCarlaEnv, DEFAULT_MULTIENV_CONFIG
-from env.carla.scenarios import update_scenarios_parameter
+from macad_agents.a3c.shared_adam import SharedAdam
+from macad_gym.carla.multi_env import MultiCarlaEnv, DEFAULT_MULTIENV_CONFIG
+from macad_gym.carla.scenarios import update_scenarios_parameter
 
 # TODO: Move to actor config or argps
 LOG_DIR = os.path.expanduser("~/tensorboard_logs")
@@ -58,10 +58,10 @@ class Net(nn.Module):
         self.action_space = action_space.shape[0]
         # Observation space for CarlaEnv is:
         # gym.spaces.Tuple(Box(84,84,6), Discrete(5), Box(2,))
-        self.input_image_shape = state_space.spaces[0].shape  # 84x84x6
+        self.input_image_shape = state_space[0].shape  # 84x84x6
         self.input_image_size = np.product(self.input_image_shape)
         # 1 is for the discrete space in state_space.spaces[1]
-        self.input_measurements_shape = 1 + state_space.spaces[2].shape[0]
+        self.input_measurements_shape = 1 + state_space[2].shape[0]
         self.conv1 = nn.Conv2d(
             np.int(self.input_image_shape[2]), 32, 4, stride=2, padding=1)
         self.conv2 = nn.Conv2d(32, 32, 4, stride=2, padding=1)
@@ -79,7 +79,7 @@ class Net(nn.Module):
 
         # Init weights
         # self.apply(weights_init)
-        set_init([
+        set_init_w([
             self.conv1, self.conv2, self.conv3, self.conv4, self.linear,
             self.critic_linear, self.actor_mu, self.actor_sigma
         ])
@@ -115,7 +115,7 @@ class Net(nn.Module):
         x = F.relu(self.linear(x.view(-1, 32 * 12 * 12)))
         x = torch.cat((x, input_measurements), 1)
 
-        actor_mu = F.tanh(self.actor_mu(x))  # Or clip to -1 & +1?
+        actor_mu = torch.tanh(self.actor_mu(x))  # Or clip to -1 & +1?
         actor_sigma = F.softplus(self.actor_sigma(x)) + 1e5
         critic_value = self.critic_linear(x)
 
@@ -149,7 +149,8 @@ class Worker(mp.Process):
         self.g_ep, self.g_ep_r, self.res_queue = (global_ep, global_ep_r,
                                                   res_queue)
         self.gnet, self.opt = gnet, opt
-        self.lnet = Net(N_S, N_A)  # local network
+        self.lnet = Net(N_S.spaces[vehicle_name],
+                        N_A.spaces[vehicle_name])  # local network
         self.env = MultiCarlaEnv(env_config)
 
     def run(self):
@@ -275,7 +276,8 @@ class Worker(mp.Process):
 
 
 if __name__ == "__main__":
-    gnet = Net(N_S, N_A)  # global network
+    gnet = Net(N_S.spaces[vehicle_name],
+               N_A.spaces[vehicle_name])  # global network
 
     last_checkpoint = max(
         glob.glob(save_model_dir + "/global/*"),

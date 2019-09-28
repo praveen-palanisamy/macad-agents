@@ -11,7 +11,9 @@
         "squash_action_logits": false,
         "verbose": false,
         "use_depth_camera": false,
-        "send_measurements": true
+        "send_measurements": true,
+        "sync_server": true,
+        "enable_planner": true
     },
 
     "actors": {

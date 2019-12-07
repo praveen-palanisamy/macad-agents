@@ -1,0 +1,15 @@
+*__pycache__
+*.egg-info
+*.eggs
+*.pytest_cache
+.tox
+.*.sw?
+*~
+.idea
+*.log
+saved_models
+_build
+_static
+_templates
+build
+dist

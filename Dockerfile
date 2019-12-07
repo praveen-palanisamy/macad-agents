@@ -114,5 +114,9 @@ RUN pip install -U pytest-remotedata>=0.3.1
 RUN pip install ray==0.6.2 psutil ray[debug]==0.6.2
 RUN pip install macad-gym
 
+# Download CARLA_0.9.4.tar.gz (1.1G)
+RUN wget https://drive.google.com/uc?export=download&confirm=gMGq&id=1p5qdXU4hVS2k5BOYSlEm7v7_ez3Et9bP
+# Extract
+tar --directory=/software/ -xzf CARLA_0.9.4.tar.gz
 # Set CARLA_SERVER path; Remember to mount the CARLA binary dir on host to this dir
 ENV CARLA_SERVER=/software/CARLA/CarlaUE4.sh

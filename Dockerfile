@@ -1,4 +1,6 @@
 FROM nvidia/cuda:10.0-cudnn7-devel-ubuntu18.04
+# Docker image for praveen-palanisamy/macad-agents
+LABEL maintainer="Praveen Palanisamy <Praveen.Palanisamy@outlook.com>"
 
 #ENV NO_PROXY="localhost, 127.0.0.1"
 #ENV http_proxy=http://USER:PASSWORD@DOMAIN.com

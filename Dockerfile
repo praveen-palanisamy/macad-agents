@@ -115,8 +115,10 @@ RUN pip install ray==0.6.2 psutil ray[debug]==0.6.2
 RUN pip install macad-gym
 
 # Download CARLA_0.9.4.tar.gz (1.1G)
-RUN wget https://drive.google.com/uc?export=download&confirm=gMGq&id=1p5qdXU4hVS2k5BOYSlEm7v7_ez3Et9bP
+RUN pip install gdown
+RUN gdown --id 1p5qdXU4hVS2k5BOYSlEm7v7_ez3Et9bP --output ./CARLA_0.9.4.tar.gz
 # Extract
-tar --directory=/software/ -xzf CARLA_0.9.4.tar.gz
-# Set CARLA_SERVER path; Remember to mount the CARLA binary dir on host to this dir
+RUN mkdir /software
+RUN tar --directory=/software/ -xzf CARLA_0.9.4.tar.gz
+# Set CARLA_SERVER path;
 ENV CARLA_SERVER=/software/CARLA/CarlaUE4.sh

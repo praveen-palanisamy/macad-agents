@@ -4,7 +4,7 @@ Multi-Agent algorithms for Multi-Agent Connected Autonomous Driving using [MACAD
 
 #### How to train/test MACAD-Agents?
 
-0. Build the MACAD-Agents Docker container: `docker build -f Dockerfile macad-agents/base:latest
+0. Build the MACAD-Agents Docker container: `docker build --rm -f Dockerfile -t macad-agents/base:latest .`
 1. git clone https://github.com/praveen-palanisamy/macad-agents
 2. Pick from one of the available multi-agent algorithms:
 

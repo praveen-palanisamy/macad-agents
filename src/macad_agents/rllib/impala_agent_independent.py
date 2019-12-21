@@ -10,16 +10,10 @@ import ray.tune as tune
 from ray.tune import register_env
 from ray.rllib.agents.impala.vtrace_policy_graph import VTracePolicyGraph
 
-# from env.carla.multi_env import MultiCarlaEnv
-# from env.envs.intersection.urban_2_car_1_ped import \
-# UrbanSignalIntersection2Car1Ped1Bike
-# from env.envs.urban_2car import Urban2Car
-# from env.envs.intersection.urban_signal_intersection_3c import \
-#    UrbanSignalIntersection3Car
-from macad_gym.envs.intersection.stop_sign_urban_intersection_3c import \
-    StopSignUrbanIntersection3Car, SSUI3C_CONFIGS
 from macad_agents.rllib.models import register_mnih15_net
 from macad_agents.rllib.env_wrappers import wrap_deepmind
+import gym
+import macad_gym
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -104,20 +98,19 @@ else:
     model_name = "mnih15"
 
 # Used only in debug mode
-env_name = "SSUI3CCARLA"
-
+env_name = "HomoNcomIndePOIntrxMASS3CTWN3-v0"
+env = gym.make(env_name)
+env_actor_configs = env.configs
 num_framestack = args.num_framestack
-
-env_actor_configs = SSUI3C_CONFIGS
-
 # env_config["env"]["render"] = False
 
 
 def env_creator(env_config):
     # NOTES: env_config.worker_index & vector_index are useful for
     # curriculum learning or joint training experiments
-    # env = MultiCarlaEnv(env_config)  # (env_actor_configs)
-    env = StopSignUrbanIntersection3Car()  # Urban2Car()
+    import macad_gym
+    env = gym.make("HomoNcomIndePOIntrxMASS3CTWN3-v0")
+
     # Apply wrappers to: convert to Grayscale, resize to 84 x 84,
     # stack frames & some more op
     env = wrap_deepmind(env, dim=84, num_framestack=num_framestack)

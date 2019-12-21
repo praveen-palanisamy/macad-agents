@@ -12,10 +12,10 @@ from ray.rllib.models.preprocessors import Preprocessor
 from ray.tune import run_experiments
 from ray.tune.registry import register_env
 
-from macad_gym.envs.intersection.stop_sign_urban_intersection_3c import \
-    StopSignUrbanIntersection3Car, SSUI3C_CONFIGS
 from macad_agents.rllib.env_wrappers import wrap_deepmind
 from macad_agents.rllib.models import register_mnih15_shared_weights_net
+import gym
+import macad_gym
 
 parser = argparse.ArgumentParser()
 
@@ -50,14 +50,15 @@ parser.add_argument(
 register_mnih15_shared_weights_net()
 model_name = "mnih15_shared_weights"
 
-env_actor_configs = SSUI3C_CONFIGS
+env_name = "HomoNcomIndePOIntrxMASS3CTWN3-v0"
+env = gym.make(env_name)
+env_actor_configs = env.configs
 num_framestack = env_actor_configs["env"]["framestack"]
-env_name = "SSUI3CCARLA-v0"
 
 
 def env_creator(env_config):
-    # env = MultiCarlaEnv(env_config)  # (env_actor_configs)
-    env = StopSignUrbanIntersection3Car()  # Urban2Car()
+    import macad_gym
+    env = gym.make("HomoNcomIndePOIntrxMASS3CTWN3-v0")
     # Apply wrappers to: convert to Grayscale, resize to 84 x 84,
     # stack frames & some more op
     env = wrap_deepmind(env, dim=84, num_framestack=num_framestack)

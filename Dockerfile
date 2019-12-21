@@ -101,26 +101,22 @@ RUN	echo 'export PATH=/opt/conda/bin:$PATH' > /etc/profile.d/conda.sh \
 ENV PATH "/opt/conda/bin:$PATH"
 
 RUN conda install -y numpy
-RUN apt-get install -y zlib1g-dev
 # The following is needed to support TensorFlow 1.14
 RUN conda remove -y --force wrapt
-RUN pip install -U pip
-RUN pip install gym[atari] opencv-python-headless tensorflow-gpu==1.14 lz4 keras pytest-timeout smart_open tensorflow_probability
-RUN pip install -U h5py  # Mutes FutureWarnings
-RUN pip install --upgrade bayesian-optimization
-RUN pip install --upgrade hyperopt==0.1.2
-RUN pip install ConfigSpace==0.4.10
-RUN pip install --upgrade sigopt nevergrad scikit-optimize hpbandster lightgbm xgboost torch torchvision
-RUN pip install -U tabulate mlflow
-RUN pip install -U pytest-remotedata>=0.3.1
-RUN pip install ray==0.6.2 psutil ray[debug]==0.6.2
-RUN pip install macad-gym
+
+RUN pip install -U pip && \
+	pip install gym[atari] opencv-python-headless tensorflow-gpu==1.14 lz4 keras pytest-timeout smart_open tensorflow_probability && \
+	pip install -U h5py  # Mutes FutureWarnings && \
+	pip install --upgrade bayesian-optimization hyperopt==0.1.2 ConfigSpace==0.4.10 sigopt nevergrad scikit-optimize hpbandster lightgbm xgboost && \
+	pip install -U torch torchvision tabulate mlflow pytest-remotedata>=0.3.1 && \
+	pip install ray==0.6.2 psutil ray[debug]==0.6.2 && \
+	pip install macad-gym
 
 # Download CARLA_0.9.4.tar.gz (1.1G)
-RUN pip install gdown
-RUN gdown --id 1p5qdXU4hVS2k5BOYSlEm7v7_ez3Et9bP --output ./CARLA_0.9.4.tar.gz
+RUN pip install gdown && \
+	gdown --id 1p5qdXU4hVS2k5BOYSlEm7v7_ez3Et9bP --output ./CARLA_0.9.4.tar.gz
 # Extract
-RUN mkdir /software
-RUN tar --directory=/software/ -xzf CARLA_0.9.4.tar.gz
+RUN mkdir /software && \
+	tar --directory=/software/ -xzf CARLA_0.9.4.tar.gz
 # Set CARLA_SERVER path;
 ENV CARLA_SERVER=/software/CARLA/CarlaUE4.sh

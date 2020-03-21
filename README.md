@@ -1,4 +1,5 @@
 ### MACAD-Agents
+[![](https://praveenp.com/projects/MACAD-Gym/HomoNcomIndePOIntrxMASS3CTWN3-v0-trained-policy.gif)](https://github.com/praveen-palanisamy/macad-gym)
 
 Multi-Agent algorithms for Multi-Agent Connected Autonomous Driving using [MACAD-Gym](https://github.com/praveen-palanisamy/macad-gym)
 

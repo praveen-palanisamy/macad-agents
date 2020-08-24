@@ -76,12 +76,12 @@ if __name__ == "__main__":
         obs = env.reset()
         total_reward_dict = {k: 0.0 for k in actor_configs.keys()}
         for actor_id in actor_configs.keys():
-            vehicle_dict[actor_id] = env.actors[actor_id]
-            end_wp = env.end_pos[actor_id]
+            vehicle_dict[actor_id] = env._actors[actor_id]
+            end_wp = env._end_pos[actor_id]
             # Set the goal for the planner to be 0.2 m after the destination
             # to avoid falling short & not triggering done
-            dest_loc = get_next_waypoint(env.world, env.end_pos[actor_id], 0.2)
-            agent = BasicAgent(env.actors[actor_id], target_speed=40)
+            dest_loc = get_next_waypoint(env.world, env._end_pos[actor_id], 0.2)
+            agent = BasicAgent(env._actors[actor_id], target_speed=40)
             agent.set_destination(dest_loc)
             agent_dict[actor_id] = agent
 
@@ -90,7 +90,7 @@ if __name__ == "__main__":
             action_dict = {}
             for actor_id, agent in agent_dict.items():
                 action_dict[actor_id] = vehicle_control_to_action(
-                    agent.run_step(), env.discrete_actions)
+                    agent.run_step(), env._discrete_actions)
 
             obs_dict, reward_dict, done_dict, info_dict = env.step(action_dict)
             done = done_dict["__all__"]
